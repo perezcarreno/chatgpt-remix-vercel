@@ -87,11 +87,24 @@ export default function ConversationDetailsPage() {
 
   const [newMessage, setNewMessage] = useState("");
 
+  // Local state for the message list items (so that we can update state for optimistic UI)
+  const [messageListItems, setMessageListItems] = useState(
+    data.messageListItems
+  );
+
   useEffect(() => {
+    // Sync the message list items with the loader data
+    setMessageListItems(data.messageListItems);
+    // Reset the state variable for the new message
+    setNewMessage("");
+  }, [data.messageListItems]);
+
+  useEffect(() => {
+    // Scroll to the bottom of the messages
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
-  }, [data.messageListItems, newMessage]);
+  }, [messageListItems, newMessage]);
 
   const messagesRef = useRef<HTMLDivElement | null>(null);
 
@@ -114,11 +127,11 @@ export default function ConversationDetailsPage() {
         </Form>
       </div>
       <div className="messages h-full overflow-y-auto" ref={messagesRef}>
-        {data.messageListItems.length === 0 ? (
+        {messageListItems.length === 0 ? (
           <p className="p-4">No messages yet. Write a new one below!</p>
         ) : (
           <div>
-            {data.messageListItems
+            {messageListItems
               .slice()
               .reverse()
               .map(
@@ -173,7 +186,7 @@ export default function ConversationDetailsPage() {
         {newMessage !== "" ? (
           <div
             id="botResponse"
-            className={`group w-full border-b border-black/10 bg-gray-300 text-gray-800`}
+            className={`group w-full border-b border-black/10 bg-gray-100 text-gray-800`}
           >
             <div className="m-auto flex gap-4 p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
               <div className="relative flex w-[30px] flex-col items-end">
@@ -194,12 +207,26 @@ export default function ConversationDetailsPage() {
           </div>
         ) : null}
       </div>
-      <MessageInput newMessage={newMessage} setNewMessage={setNewMessage} />
+      <MessageInput
+        newMessage={newMessage}
+        setNewMessage={setNewMessage}
+        onMessageSend={(newMessageItem: {
+          id: string;
+          content: string;
+          role: string;
+        }) => {
+          setMessageListItems((prevItems) => [newMessageItem, ...prevItems]);
+        }}
+      />
     </div>
   );
 }
 
-function MessageInput(props: { newMessage: string; setNewMessage: Function }) {
+function MessageInput(props: {
+  newMessage: string;
+  setNewMessage: Function;
+  onMessageSend: Function;
+}) {
   let messageFetcher = useFetcher();
   let revalidator = useRevalidator();
 
@@ -261,15 +288,11 @@ function MessageInput(props: { newMessage: string; setNewMessage: Function }) {
         // If the stream is done, save the complete message to the db
         if (event.data === "[DONE]") {
           sse.close();
-          revalidator.revalidate();
-          // Reset the state variable for the new message
-          props.setNewMessage("");
-          // Reset the form
-          messageFormRef.current?.reset();
-          setText("");
+
           // Focus the text area
           messageFormRef.current?.text.focus();
           setIsCompletionStreaming(false);
+          revalidator.revalidate();
         } else {
           // Otherwise, add the new message to the state variable
           props.setNewMessage(
@@ -285,6 +308,17 @@ function MessageInput(props: { newMessage: string; setNewMessage: Function }) {
         setIsCompletionStreaming(false);
         sse.close();
       });
+    } else if (messageFetcher.state === "submitting") {
+      // Optimistically update the message list
+      const userMessage = {
+        id: cuid(), // Temporary unique identifier
+        role: "user",
+        content: text,
+      };
+      props.onMessageSend(userMessage);
+      // Reset the form immediately after submitting (for optimistic ui)
+      messageFormRef.current?.reset();
+      setText("");
     }
   }, [messageFetcher]);
 
