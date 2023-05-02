@@ -58,13 +58,20 @@ Here are a few screenshots of what it looks like right now:
   npx remix init
   ```
 
-  - Initialize git and push to a new Github repository (or create a fork)
+- Initialize git and push to a new Github repository (or create a fork)
 
-  - Create a new Vercel project by importing your new repository.
+- Create a new Vercel project by importing your new repository.
 
-  - Go to the Storage tab in your Vercel project, and add PostgreSQL Storage (new feature).
+- Add your own OpenAI API Key and a Session Secret to your Vercel Environment variables when deploying for the first time.
 
-  - Copy .env.example to .env and change the SESSION_SECRET to something different, add your own OpenAI API Key, and add your new environment variables from your Vercel project.
+  ```sh
+  SESSION_SECRET="super-duper-s3cret"
+  OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXX
+  ```
+
+- Go to the Storage tab in your Vercel project, and add PostgreSQL Storage (new feature).
+
+- Copy .env.example to .env and add your environment variables from your Vercel project.
 
   ```sh
   SESSION_SECRET="super-duper-s3cret"
