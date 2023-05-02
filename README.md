@@ -1,4 +1,4 @@
-# ChatGPT Remix
+# ChatGPT Remix Vercel
 
 This is a Remix Stack focused on creating a ChatGPT conversations interface, it runs on Vercel serverless functions, with Vercel Storage. It supports multiple users, response streaming, multiple conversations, and persistent message history. It was based off the [Remix Indie Stack](https://github.com/remix-run/indie-stack), so it is has everything you need to get you started exploring.
 
