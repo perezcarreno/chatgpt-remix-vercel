@@ -1,12 +1,12 @@
 # ChatGPT Remix
 
-This is a Remix Stack focused on creating a ChatGPT conversations interface. It supports multiple users, response streaming, multiple conversations, and a database (PostgreSQL) message history. It was based off the [Remix Indie Stack](https://github.com/remix-run/indie-stack), so it is has everything you need to get you started exploring.
+This is a Remix Stack focused on creating a ChatGPT conversations interface, it runs on Vercel serverless functions, with Vercel Storage. It supports multiple users, response streaming, multiple conversations, and persistent message history. It was based off the [Remix Indie Stack](https://github.com/remix-run/indie-stack), so it is has everything you need to get you started exploring.
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
 ## Motivation
 
-I created this project because I could not find complete examples on how to use both Remix and the ChatGPT API with streaming and persistent conversation history, without getting overly complex. The idea is for this to be something anyone can run on their machine and not need to spin up Redis, Postgres, Docker, etc. I know a lot of people want to learn about this topic, so I hope this helps some of you get up and running faster.
+I created this project because I could not find complete examples on how to use both Remix and the ChatGPT API with streaming and persistent conversation history, without getting overly complex. The idea is for this to be something anyone can run on their machine and deploy Vercel, without needing any third-party services. I know a lot of people want to learn about this topic, so I hope this helps some of you get up and running faster.
 
 This will be an evolving project to which I will add new features, better styling, etc. So if you're interested, hop on for the ride!
 
@@ -58,9 +58,13 @@ Here are a few screenshots of what it looks like right now:
   npx remix init
   ```
 
-  - Create a new PostgreSQL Storage in Vercel and attach it to your project
+  - Initialize git and push to a new Github repository (or create a fork)
 
-  - Copy .env.example to .env and change the SESSION_SECRET to something different, add your own OpenAI API Key, and add your new environment variables from Vercel
+  - Create a new Vercel project by importing your new repository.
+
+  - Go to the Storage tab in your Vercel project, and add PostgreSQL Storage (new feature).
+
+  - Copy .env.example to .env and change the SESSION_SECRET to something different, add your own OpenAI API Key, and add your new environment variables from your Vercel project.
 
   ```sh
   SESSION_SECRET="super-duper-s3cret"
@@ -106,19 +110,18 @@ This is a basic implementation of a ChatGPT conversations interface, but it's a 
 
 ## Deployment
 
-- Initialize Git.
-
-```sh
-git init
-```
+- Push to your main Github branch. Vercel should deploy automatically.
 
 ## Roadmap
 
 - [x] Integrate streaming responses from the ChatGPT API
 - [x] Keep persistent message history for each user and conversation in the database
 - [x] Support for Vercel PostgreSQL Storage
+- [ ] Step-by-step README
 - [ ] Styling enhancements
 - [ ] Mobile drawer sidebar
+- [ ] Support for GPT4
+- [ ] Authentication via Clerk
 - [ ] System message UI
 - [ ] Support for embeddings
 - [ ] Support for other authentication methods
