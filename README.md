@@ -71,6 +71,8 @@ Here are a few screenshots of what it looks like right now:
 
 - Go to the Storage tab in your Vercel project, and add PostgreSQL Storage (new feature).
 
+- In your Vercel project settings, go to "Environment Variables" and create a new variable called 'POSTGRES_PRISMA_URL_NO_TIMEOUT'. Copy the contents of 'POSTGRES_PRISMA_URL' and remove the ending '&connect_timeout=15'. For some reason, it doesn't work with it at the moment.
+
 - Copy .env.example to .env and add your environment variables from your Vercel project.
 
   ```sh
